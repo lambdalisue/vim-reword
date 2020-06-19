@@ -27,7 +27,9 @@ function! reword#preview#start(range) abort
     execute printf('rundo %s', fnameescape(undofile))
     let &modified = modified
   endtry
-  call s:apply(a:range, expr)
+  if s:apply(a:range, expr)
+    call histadd('cmd', printf('%sReword%s', reword#util#range(a:range), expr))
+  endif
 endfunction
 
 function! s:update(ns, timer) abort
@@ -69,6 +71,7 @@ function! s:apply(range, expr) abort
     execute printf('/\c\%%(%s\)/', join(exprs, '\|'))
   else
     call reword#substitute(pat, sub, a:range)
+    return 1
   endif
 endfunction
 
