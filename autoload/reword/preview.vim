@@ -1,6 +1,6 @@
 let s:interval = 100
 
-function! reword#prompt#start(range) abort
+function! reword#preview#start(range) abort
   let modified = &modified
   let undofile = tempname()
   let ns = {
@@ -16,13 +16,9 @@ function! reword#prompt#start(range) abort
           \ { t -> s:update(ns, t) },
           \ { 'repeat': -1 },
           \)
-    let prefix = s:range(a:range) . 's'
-    execute printf(
-          \ 'cnoremap <expr> <Plug>(reword-backspace) <SID>backspace("%s")',
-          \ prefix,
-          \)
     cmap <buffer> <Backspace> <Plug>(reword-backspace)
     cmap <buffer> <C-h> <Plug>(reword-backspace)
+    let prefix = reword#util#range(a:range) . 'Reword'
     let expr = input(':' . prefix, '', 'command')
   finally
     cunmap <buffer> <Backspace>
@@ -32,17 +28,6 @@ function! reword#prompt#start(range) abort
     let &modified = modified
   endtry
   call s:apply(a:range, expr)
-endfunction
-
-function! s:range(range) abort
-  if a:range[0] is# a:range[1]
-    return a:range[0] is# line('.')
-          \ ? ''
-          \ : a:range[0] . ''
-  elseif a:range[0] is# 1 && a:range[1] is# line('$')
-    return '%'
-  endif
-  return printf('%d,%d', a:range[0], a:range[1])
 endfunction
 
 function! s:update(ns, timer) abort
@@ -61,25 +46,36 @@ function! s:update(ns, timer) abort
 endfunction
 
 function! s:apply(range, expr) abort
-  let [pat, sub, flg] = reword#parser#parse(a:expr)
+  let [pat, sub] = reword#util#parse(a:expr)
   if empty(pat)
     nohlsearch
   elseif empty(sub)
-    let expr1 = printf('\%%>%dl\%%<%dl%s', a:range[0], a:range[1], pat)
-    let expr2 = printf('\%%%dl%s', a:range[0], pat)
-    let expr3 = printf('\%%%dl%s', a:range[1], pat)
-    execute printf('/\c\%%(%s\)/', join([expr1, expr2, expr3], '\|'))
+    let rs = get(a:range, 0, v:null)
+    let re = get(a:range, 1, v:null)
+    let exprs = []
+    if rs is# v:null && re is# v:null
+      call add(exprs, pat)
+    else
+      if rs isnot# v:null && re isnot# v:null
+        call add(exprs, printf('\%%>%dl\%%<%dl%s', rs, re, pat))
+      endif
+      if rs isnot# v:null
+        call add(exprs, printf('\%%%dl%s', rs, pat))
+      endif
+      if re isnot# v:null
+        call add(exprs, printf('\%%%dl%s', re, pat))
+      endif
+    endif
+    execute printf('/\c\%%(%s\)/', join(exprs, '\|'))
   else
-    call reword#substitute(pat, sub, {
-          \ 'flags': flg,
-          \ 'range': s:range(a:range),
-          \})
+    call reword#substitute(pat, sub, a:range)
   endif
 endfunction
 
-function! s:backspace(prefix) abort
+function! s:backspace() abort
   return len(getcmdline()) <= 1
-        \ ? printf("\<Esc>:%s", a:prefix)
+        \ ? "\<Esc>"
         \ : "\<Backspace>"
 endfunction
 
+cnoremap <expr> <Plug>(reword-backspace) <SID>backspace()
