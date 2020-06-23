@@ -1,15 +1,36 @@
 function! reword#substitute(pat, sub, ...) abort
-  let range = reword#util#range(a:0 ? a:1 : [])
+  let options = extend({
+        \ 'range': [],
+        \ 'flags': g:reword#default_flags,
+        \}, a:0 ? a:1 : {},
+        \)
+  let range = reword#range(options.range)
   try
+    if options.flags !~# 'l'
+      silent! execute printf('%ss/\C\<%s/%s/g',
+            \ range,
+            \ reword#case#to_lower_camel(a:pat),
+            \ reword#case#to_lower_camel(a:sub),
+            \)
+    endif
+    if options.flags !~# 's'
+      silent! execute printf('%ss/\C\<%s/%s/g',
+            \ range,
+            \ reword#case#to_snake(a:pat),
+            \ reword#case#to_snake(a:sub),
+            \)
+    endif
+    if options.flags !~# 'k'
+      silent! execute printf('%ss/\C\<%s/%s/g',
+            \ range,
+            \ reword#case#to_kebab(a:pat),
+            \ reword#case#to_kebab(a:sub),
+            \)
+    endif
     silent! execute printf('%ss/\C%s/%s/g',
           \ range,
           \ a:pat,
           \ a:sub,
-          \)
-    silent! execute printf('%ss/\c%s/%s/g',
-          \ range,
-          \ a:pat,
-          \ tolower(a:sub),
           \)
   catch /^Vim\%((\a\+)\)\=:E486:/
     echohl ErrorMsg
@@ -18,8 +39,52 @@ function! reword#substitute(pat, sub, ...) abort
   endtry
 endfunction
 
-function! reword#command(qargs, range) abort
-  let expr = reword#util#trim(a:qargs)
-  let [pat, sub] = reword#util#parse(expr)
-  call reword#substitute(pat, sub, a:range)
+function! reword#parse(expr) abort
+  let pat = ''
+  let sub = ''
+  let flags = g:reword#default_flags
+  if empty(a:expr)
+    return [pat, sub, flags]
+  endif
+  let sep = a:expr[0]
+  let i1 = match(a:expr, printf('[^\\]%s', sep), 1)
+  if i1 is# -1
+    let pat = a:expr[1:]
+    return [pat, sub, flags]
+  endif
+  let pat = a:expr[1:i1]
+  let i2 = match(a:expr, printf('[^\\]%s', sep), i1 + 1)
+  if i2 is# -1
+    let sub = a:expr[i1 + 2:]
+    return [pat, sub, flags]
+  endif
+  let sub = a:expr[i1 + 2:i2]
+  let flags = a:expr[i2 + 2:]
+  return [pat, sub, flags]
 endfunction
+
+function! reword#range(range) abort
+  let rs = get(a:range, 0, v:null)
+  let re = get(a:range, 1, v:null)
+  if rs is# v:null
+    return ''
+  elseif rs is# re
+    return rs is# line('.') ? '' : rs . ''
+  elseif rs is# 1 && re is# line('$')
+    return '%'
+  endif
+  let rs = rs is# line("'<") ? "'<" : rs
+  let re = re is# line("'>") ? "'>" : re
+  return printf('%d,%d', rs, re)
+endfunction
+
+function! reword#command(range, qargs) abort
+  let expr = substitute(a:qargs, '^\s\+\|\s\+$', '', 'g')
+  let [pat, sub, flags] = reword#parse(expr)
+  call reword#substitute(pat, sub, {
+        \ 'range': a:range,
+        \ 'flags': flags,
+        \})
+endfunction
+
+let g:reword#default_flags = get(g:, 'reword#default_flags', '')
