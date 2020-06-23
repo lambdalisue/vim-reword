@@ -58,12 +58,12 @@ function! s:apply(range, expr) abort
     if rs is# v:null && re is# v:null
       call add(exprs, pat)
     else
-      let pat = printf('\%%(%s\)', join([
+      let pat = printf('\%%(%s\)', join(uniq(sort([
             \ pat,
             \ reword#case#to_lower_camel(pat),
             \ reword#case#to_snake(pat),
             \ reword#case#to_kebab(pat),
-            \], '\|'))
+            \])), '\|'))
       if rs isnot# v:null && re isnot# v:null
         call add(exprs, printf('\%%>%dl\%%<%dl%s', rs, re, pat))
       endif
