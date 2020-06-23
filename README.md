@@ -1,6 +1,8 @@
-# reword.vim
+# 🧬 reword.vim
 
 Keep case in substututions.
+
+[![Reword preview](https://user-images.githubusercontent.com/546312/85360557-66839080-b554-11ea-9db8-4c2ebb021203.gif)](https://asciinema.org/a/OeVFw18uPAT8MAm9VaTEdLmd2)
 
 **In alpha stage**
 
@@ -22,4 +24,3 @@ Use `:RewordPreview` to start reword.
 ### Shortcut
 
 Use `:R` or `:%R` and delimiter (e.g. `/`) to start preview automatically.
-
