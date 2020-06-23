@@ -7,21 +7,21 @@ function! reword#substitute(pat, sub, ...) abort
   let range = reword#range(options.range)
   try
     if options.flags !~# 'l'
-      silent! execute printf('%ss/\C\<%s/%s/g',
+      silent! execute printf('%ss/\C%s/%s/g',
             \ range,
             \ reword#case#to_lower_camel(a:pat),
             \ reword#case#to_lower_camel(a:sub),
             \)
     endif
     if options.flags !~# 's'
-      silent! execute printf('%ss/\C\<%s/%s/g',
+      silent! execute printf('%ss/\C%s/%s/g',
             \ range,
             \ reword#case#to_snake(a:pat),
             \ reword#case#to_snake(a:sub),
             \)
     endif
     if options.flags !~# 'k'
-      silent! execute printf('%ss/\C\<%s/%s/g',
+      silent! execute printf('%ss/\C%s/%s/g',
             \ range,
             \ reword#case#to_kebab(a:pat),
             \ reword#case#to_kebab(a:sub),
