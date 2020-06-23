@@ -74,7 +74,7 @@ function! s:apply(range, expr) abort
         call add(exprs, printf('\%%%dl%s', re, pat))
       endif
     endif
-    execute printf('/\C\%%(%s\)/', join(exprs, '\|'))
+    silent! execute printf('/\C\%%(%s\)/', join(exprs, '\|'))
   else
     call reword#substitute(pat, sub, {
           \ 'range': a:range,
