@@ -5,32 +5,37 @@ function! reword#substitute(pat, sub, ...) abort
         \}, a:0 ? a:1 : {},
         \)
   let range = reword#range(options.range)
+  let flags = substitute(options.flags, '[lsk]', '', 'g')
   try
     if options.flags !~# 'l'
-      silent! execute printf('%ss/\C%s/%s/g',
+      silent! execute printf('%ss/\C%s/%s/%s',
             \ range,
             \ reword#case#to_lower_camel(a:pat),
             \ reword#case#to_lower_camel(a:sub),
+            \ flags,
             \)
     endif
     if options.flags !~# 's'
-      silent! execute printf('%ss/\C%s/%s/g',
+      silent! execute printf('%ss/\C%s/%s/%s',
             \ range,
             \ reword#case#to_snake(a:pat),
             \ reword#case#to_snake(a:sub),
+            \ flags,
             \)
     endif
     if options.flags !~# 'k'
-      silent! execute printf('%ss/\C%s/%s/g',
+      silent! execute printf('%ss/\C%s/%s/%s',
             \ range,
             \ reword#case#to_kebab(a:pat),
             \ reword#case#to_kebab(a:sub),
+            \ flags,
             \)
     endif
-    silent! execute printf('%ss/\C%s/%s/g',
+    silent! execute printf('%ss/\C%s/%s/%s',
           \ range,
           \ a:pat,
           \ a:sub,
+          \ flags,
           \)
   catch /^Vim\%((\a\+)\)\=:E486:/
     echohl ErrorMsg

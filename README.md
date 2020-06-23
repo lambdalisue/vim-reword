@@ -8,7 +8,7 @@ Keep case in substututions.
 
 ## Usage (Command)
 
-When `:Reword/HelloWorld/FooBarHoge` has executed, the following substitutions will be applied
+When `:Reword/HelloWorld/FooBarHoge/g` has executed, the following substitutions will be applied
 
 | From          | To             | Disable flag |
 | ------------- | -------------- | ------------ |
