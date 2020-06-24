@@ -74,13 +74,15 @@ function! reword#range(range) abort
   if rs is# v:null
     return ''
   elseif rs is# re
-    return rs is# line('.') ? '' : rs . ''
+    return rs is# line('.') ? '' : (rs . '')
   elseif rs is# 1 && re is# line('$')
     return '%'
   endif
-  let rs = rs is# line("'<") ? "'<" : rs
-  let re = re is# line("'>") ? "'>" : re
-  return printf('%d,%d', rs, re)
+  return printf(
+        \ '%s,%s',
+        \ rs is# line("'<") ? "'<" : rs,
+        \ re is# line("'>") ? "'>" : re,
+        \)
 endfunction
 
 function! reword#command(range, qargs) abort
