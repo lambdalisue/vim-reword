@@ -35,6 +35,22 @@ function! reword#preview#start(range) abort
   endif
 endfunction
 
+function! reword#preview#seamless() abort
+  let pattern = '^\%(''<\|\|''>\|\d\+\)\%(,\%(''<\|\|''>\|\d\+\)\)\?'
+  let cmdline = getcmdline()
+  let keyword = matchstr(cmdline, '\w\+$')
+  if cmdline ==# keyword
+    return 'RewordPreview' . "\<CR>"
+  elseif cmdline =~# '^%' . keyword
+    return '%RewordPreview' . "\<CR>"
+  elseif cmdline =~# pattern . keyword
+    return matchstr(cmdline, pattern) . 'RewordPreview' . "\<CR>"
+  endif
+  return keyword
+endfunction
+
+
+
 function! s:update(ns, timer) abort
   if getcmdtype() !=# '@' || a:ns.bufnr isnot# bufnr('%')
     call timer_stop(a:timer)

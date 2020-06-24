@@ -9,20 +9,6 @@ command! -nargs=+ -range Reword
 command! -nargs=0 -range RewordPreview
       \ call reword#preview#start([<line1>, <line2>])
 
-function! RewordSeamless() abort
-  let pattern = '^\%(''<\|\|''>\|\d\+\)\%(,\%(''<\|\|''>\|\d\+\)\)\?'
-  let cmdline = getcmdline()
-  let keyword = matchstr(cmdline, '\w\+$')
-  if cmdline ==# keyword
-    return 'RewordPreview' . "\<CR>"
-  elseif cmdline =~# '^%' . keyword
-    return '%RewordPreview' . "\<CR>"
-  elseif cmdline =~# pattern . keyword
-    return matchstr(cmdline, pattern) . 'RewordPreview' . "\<CR>"
-  endif
-  return keyword
-endfunction
-
-if get(g:, 'reword_seamless_preview', 1)
-  cnoreabbrev <expr> Reword RewordSeamless()
+if !get(g:, 'reword_disable_seamless_preview', 0)
+  cnoreabbrev <expr> Reword reword#preview#seamless()
 endif
