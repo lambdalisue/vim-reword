@@ -1,0 +1,88 @@
+*reword.txt*			Rewords by case preserving substitutions
+
+Author:  Alisue <lambdalisue@hashnote.net>
+License: MIT license
+
+=============================================================================
+CONTENTS						*reword-contents*
+
+INTRODUCTION				|reword-introduction|
+USAGE					|reword-usage|
+INTERFACE				|reword-interface|
+  VARIABLE				|reword-variable|
+  COMMAND				|reword-command|
+  FUNCTION				|reword-function|
+
+
+=============================================================================
+INTRODUCTION						*reword-introduction*
+
+*reword.vim* (reword) is a plugin to reword in case preserving manner.
+
+
+=============================================================================
+USAGE							*reword-usage*
+
+Use UpperCamelCase in |:Reword| command to substitute like
+>
+	:Reword/HelloWorld/FooBarHoge/g
+<
+If you'd like to apply the substitution to the entire buffer, use % like
+>
+	:%Reword/HelloWorld/FooBarHoge/g
+<
+
+=============================================================================
+INTERFACE						*reword-interface*
+
+-----------------------------------------------------------------------------
+VARIABLE						*reword-variable*
+
+*g:reword_disable_seamless_preview*
+	Set 1 to disable seamless preview feature via |cnoreabbrev|.
+	Default: 0
+
+
+-----------------------------------------------------------------------------
+COMMAND							*reword-command*
+
+							*:Reword*
+:[range]Reword/{pat}/{sub}/[flags]
+	Substitute {pat} in the current buffer to {sub}. The {pat} must be
+	written in UpperCamelCase then corresponding cases of the {pat} will
+	be substituted.
+	Note that the following additional {flags} are available
+
+	l	Disable lowerCamelCase substitution
+	s	Disable snake_case substitution
+	k	Disable kebab-case substitution
+
+	Example:
+>
+	:%Reword/HelloWorld/FooBarHoge/g
+<
+	Note that the delimiter can be any non word character as like
+	|:substitute| command.
+>
+	:%Reword!HelloWorld!FooBarHoge!g
+<
+							*:RewordPreview*
+:[range]RewordPreview
+	Start live-preview substitution.
+
+-----------------------------------------------------------------------------
+FUNCTION						*reword-function*
+
+						*reword#preview#seamless()*
+reword#preview#seamless()
+	An abbreviation function to start |:RewordPreview| seemlessly.
+	Use it with |cnoreabbrev| and |map-<expr>| like
+>
+	cnoreabbrev <expr> Reword reword#preview#seamless()
+<
+	Then when user hit Reword{delimiter}, |:RewordPreview| is called with
+	the {delimiter} seemlessly.
+
+
+=============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
