@@ -2,6 +2,7 @@ let s:interval = 100
 
 function! reword#preview#start(range) abort
   let modified = &modified
+  let hlsearch = &hlsearch
   let undofile = tempname()
   let ns = {
         \ 'bufnr': bufnr('%'),
@@ -11,6 +12,7 @@ function! reword#preview#start(range) abort
         \}
   try
     execute printf('wundo! %s', fnameescape(undofile))
+    set hlsearch
     call timer_start(
           \ s:interval,
           \ { t -> s:update(ns, t) },
@@ -25,6 +27,7 @@ function! reword#preview#start(range) abort
     cunmap <buffer> <C-h>
     call setline(1, ns.content)
     silent! execute printf('rundo %s', fnameescape(undofile))
+    let &hlsearch = hlsearch
     let &modified = modified
   endtry
   if s:apply(a:range, expr)
