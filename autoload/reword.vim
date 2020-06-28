@@ -45,31 +45,12 @@ function! reword#substitute(pat, sub, ...) abort
 endfunction
 
 function! reword#parse(expr) abort
-  let pat = ''
-  let sub = ''
-  let flags = g:reword#default_flags
-  if empty(a:expr)
-    return [pat, sub, flags]
-  endif
-  let sep = a:expr[0]
-  let i1 = match(a:expr, printf('[^\\]%s', sep), 1)
-  if i1 is# -1
-    let pat = a:expr[1:]
-    let pat = substitute(pat, '\\\([^\\]\)', '\1', 'g')
-    return [pat, sub, flags]
-  endif
-  let pat = a:expr[1:i1]
-  let pat = substitute(pat, '\\\([^\\]\)', '\1', 'g')
-  let i2 = match(a:expr, printf('[^\\]%s', sep), i1 + 1)
-  if i2 is# -1
-    let sub = a:expr[i1 + 2:]
-    let sub = substitute(sub, '\\\([^\\]\)', '\1', 'g')
-    return [pat, sub, flags]
-  endif
-  let sub = a:expr[i1 + 2:i2]
-  let sub = substitute(sub, '\\\([^\\]\)', '\1', 'g')
-  let flags = a:expr[i2 + 2:]
-  return [pat, sub, flags]
+  let sep = a:expr[:0]
+  let terms = split(a:expr, printf('\\\@<!%s', sep))
+  let lhs = substitute(get(terms, 0, ''), '\\\([^\\]\)', '\1', 'g')
+  let rhs = substitute(get(terms, 1, ''), '\\\([^\\]\)', '\1', 'g')
+  let flg = get(terms, 2, g:reword#default_flags)
+  return [lhs, rhs, flg]
 endfunction
 
 function! reword#range(range) abort
