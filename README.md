@@ -13,11 +13,11 @@ Keep case in substututions.
 
 ## Usage
 
-When `:%Reword/FooBarHoge/FooBarHoge/g` has executed, the following substitutions will be applied
+When `:%Reword/HelloWorld/FooBarHoge/g` has executed, the following substitutions will be applied
 
-| From           | To             | Disable flag |
-| -------------- | -------------- | ------------ |
-| `FooBarHoge`   | `FooBarHoge`   | -            |
-| `fooBarHoge`   | `fooBarHoge`   | `l`          |
-| `foo_bar_hoge` | `foo_bar_hoge` | `s`          |
-| `foo-bar-hoge` | `foo-bar-hoge` | `k`          |
+| From          | To             | Disable flag |
+| ------------- | -------------- | ------------ |
+| `HelloWorld`  | `FooBarHoge`   | -            |
+| `helloWorld`  | `fooBarHoge`   | `l`          |
+| `hello_world` | `foo_bar_hoge` | `s`          |
+| `hello-world` | `foo-bar-hoge` | `k`          |
