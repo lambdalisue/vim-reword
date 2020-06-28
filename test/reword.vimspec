@@ -302,4 +302,22 @@ Describe reword
       Assert Equals(flags, '')
     End
   End
+
+  Describe #lower_camel_case()
+    It converts UpperCamelCase to lowerCamelCase
+      Assert Equals(reword#lower_camel_case('FooBarHoge'), 'fooBarHoge')
+    End
+  End
+
+  Describe #snake_case()
+    It converts UpperCamelCase to snake_case
+      Assert Equals(reword#snake_case('FooBarHoge'), 'foo_bar_hoge')
+    End
+  End
+
+  Describe #kebab_case()
+    It converts UpperCamelCase to kebab-case
+      Assert Equals(reword#kebab_case('FooBarHoge'), 'foo-bar-hoge')
+    End
+  End
 End

@@ -79,9 +79,9 @@ function! s:apply(range, expr) abort
     else
       let pat = printf('\%%(%s\)', join(uniq(sort([
             \ pat,
-            \ reword#case#to_lower_camel(pat),
-            \ reword#case#to_snake(pat),
-            \ reword#case#to_kebab(pat),
+            \ reword#lower_camel_case(pat),
+            \ reword#snake_case(pat),
+            \ reword#kebab_case(pat),
             \])), '\|'))
       if rs isnot# v:null && re isnot# v:null
         call add(exprs, printf('\%%>%dl\%%<%dl%s', rs, re, pat))

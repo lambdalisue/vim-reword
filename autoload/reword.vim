@@ -10,24 +10,24 @@ function! reword#substitute(old, new, ...) abort
     if options.flags !~# 'l'
       silent! execute printf('%ss/\C%s/%s/%s',
             \ range,
-            \ reword#case#to_lower_camel(a:old),
-            \ reword#case#to_lower_camel(a:new),
+            \ reword#lower_camel_case(a:old),
+            \ reword#lower_camel_case(a:new),
             \ flags,
             \)
     endif
     if options.flags !~# 's'
       silent! execute printf('%ss/\C%s/%s/%s',
             \ range,
-            \ reword#case#to_snake(a:old),
-            \ reword#case#to_snake(a:new),
+            \ reword#snake_case(a:old),
+            \ reword#snake_case(a:new),
             \ flags,
             \)
     endif
     if options.flags !~# 'k'
       silent! execute printf('%ss/\C%s/%s/%s',
             \ range,
-            \ reword#case#to_kebab(a:old),
-            \ reword#case#to_kebab(a:new),
+            \ reword#kebab_case(a:old),
+            \ reword#kebab_case(a:new),
             \ flags,
             \)
     endif
@@ -78,4 +78,28 @@ function! reword#command(range, qargs) abort
         \ 'flags': flags,
         \})
 endfunction
+
+function! reword#lower_camel_case(text) abort
+  let t = s:escape_pattern(a:text)
+  return substitute(t, '^\(\u\)', '\l\1', 'g')
+endfunction
+
+function! reword#snake_case(text) abort
+  let t = s:escape_pattern(a:text)
+  let t = substitute(t, '\(\l\)\(\u\)', '\1_\l\2', 'g')
+  let t = substitute(t, '\(\u\)\(\u\)\(\l\)', '\1_\l\2\3', 'g')
+  return tolower(t)
+endfunction
+
+function! reword#kebab_case(text) abort
+  let t = s:escape_pattern(a:text)
+  let t = substitute(t, '\(\l\)\(\u\)', '\1-\l\2', 'g')
+  let t = substitute(t, '\(\u\)\(\u\)\(\l\)', '\1-\l\2\3', 'g')
+  return tolower(t)
+endfunction
+
+function! s:escape_pattern(text) abort
+  return escape(a:text, '^$~.*[]\')
+endfunction
+
 let g:reword#default_flags = get(g:, 'reword#default_flags', '')
