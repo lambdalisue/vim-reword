@@ -1,5 +1,9 @@
 # 🧬 reword.vim
 
+![vim](https://github.com/lambdalisue/reword.vim/workflows/vim/badge.svg)
+![neovim](https://github.com/lambdalisue/reword.vim/workflows/neovim/badge.svg)
+![reviewdog](https://github.com/lambdalisue/reword.vim/workflows/reviewdog/badge.svg)
+
 ![Support Vim 8.1 or above](https://img.shields.io/badge/support-Vim%208.1%20or%20above-yellowgreen.svg)
 ![Support Neovim 0.4 or above](https://img.shields.io/badge/support-Neovim%200.4%20or%20above-yellowgreen.svg)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
