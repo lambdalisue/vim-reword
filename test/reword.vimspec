@@ -1,4 +1,236 @@
 Describe reword
+  Before
+    %bwipeout!
+  End
+
+  Describe #substitute()
+    Before
+      call setline(1, [
+            \ 'HelloWorld HelloWorld',
+            \ 'HelloWorld HelloWorld',
+            \ 'helloWorld helloWorld',
+            \ 'helloWorld helloWorld',
+            \ 'hello_world hello_world',
+            \ 'hello_world hello_world',
+            \ 'hello-world hello-world',
+            \ 'hello-world hello-world',
+            \])
+    End
+
+    Context UpperCamelCase
+      Before
+        call cursor([1, 1])
+      End
+
+      It substitutes HelloWorld to FooBarHoge (Single-line/Non-global)
+        call reword#substitute('HelloWorld', 'FooBarHoge')
+        Assert Equals(getline(1, 2), [
+              \ 'FooBarHoge HelloWorld',
+              \ 'HelloWorld HelloWorld',
+              \])
+      End
+
+      It substitutes HelloWorld to FooBarHoge (Single-line/Global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'flags': 'g',
+              \})
+        Assert Equals(getline(1, 2), [
+              \ 'FooBarHoge FooBarHoge',
+              \ 'HelloWorld HelloWorld',
+              \])
+      End
+
+      It substitutes HelloWorld to FooBarHoge (Multi-line/Non-global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'range': [1, line('$')],
+              \})
+        Assert Equals(getline(1, 2), [
+              \ 'FooBarHoge HelloWorld',
+              \ 'FooBarHoge HelloWorld',
+              \])
+      End
+
+      It substitutes HelloWorld to FooBarHoge (Multi-line/Global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'range': [1, line('$')],
+              \ 'flags': 'g',
+              \})
+        Assert Equals(getline(1, 2), [
+              \ 'FooBarHoge FooBarHoge',
+              \ 'FooBarHoge FooBarHoge',
+              \])
+      End
+    End
+
+    Context lowerCamelCase
+      Before
+        call cursor([3, 1])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Single-line/Non-global)
+        call reword#substitute('HelloWorld', 'FooBarHoge')
+        Assert Equals(getline(3, 4), [
+              \ 'fooBarHoge helloWorld',
+              \ 'helloWorld helloWorld',
+              \])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Single-line/Global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'flags': 'g',
+              \})
+        Assert Equals(getline(3, 4), [
+              \ 'fooBarHoge fooBarHoge',
+              \ 'helloWorld helloWorld',
+              \])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Multi-line/Non-global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'range': [1, line('$')],
+              \})
+        Assert Equals(getline(3, 4), [
+              \ 'fooBarHoge helloWorld',
+              \ 'fooBarHoge helloWorld',
+              \])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Multi-line/Global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'range': [1, line('$')],
+              \ 'flags': 'g',
+              \})
+        Assert Equals(getline(3, 4), [
+              \ 'fooBarHoge fooBarHoge',
+              \ 'fooBarHoge fooBarHoge',
+              \])
+      End
+
+      It DOES NOT substitute helloWorld to fooBarHoge (disabled by flags)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'range': [1, line('$')],
+              \ 'flags': 'gl',
+              \})
+        Assert Equals(getline(3, 4), [
+              \ 'helloWorld helloWorld',
+              \ 'helloWorld helloWorld',
+              \])
+      End
+    End
+
+    Context snake_case
+      Before
+        call cursor([5, 1])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Single-line/Non-global)
+        call reword#substitute('HelloWorld', 'FooBarHoge')
+        Assert Equals(getline(5, 6), [
+              \ 'foo_bar_hoge hello_world',
+              \ 'hello_world hello_world',
+              \])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Single-line/Global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'flags': 'g',
+              \})
+        Assert Equals(getline(5, 6), [
+              \ 'foo_bar_hoge foo_bar_hoge',
+              \ 'hello_world hello_world',
+              \])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Multi-line/Non-global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'range': [1, line('$')],
+              \})
+        Assert Equals(getline(5, 6), [
+              \ 'foo_bar_hoge hello_world',
+              \ 'foo_bar_hoge hello_world',
+              \])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Multi-line/Global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'range': [1, line('$')],
+              \ 'flags': 'g',
+              \})
+        Assert Equals(getline(5, 6), [
+              \ 'foo_bar_hoge foo_bar_hoge',
+              \ 'foo_bar_hoge foo_bar_hoge',
+              \])
+      End
+
+      It DOES NOT substitute helloWorld to fooBarHoge (disabled by flags)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'range': [1, line('$')],
+              \ 'flags': 'gs',
+              \})
+        Assert Equals(getline(5, 6), [
+              \ 'hello_world hello_world',
+              \ 'hello_world hello_world',
+              \])
+      End
+    End
+
+    Context kebab-case
+      Before
+        call cursor([7, 1])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Single-line/Non-global)
+        call reword#substitute('HelloWorld', 'FooBarHoge')
+        Assert Equals(getline(7, 8), [
+              \ 'foo-bar-hoge hello-world',
+              \ 'hello-world hello-world',
+              \])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Single-line/Global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'flags': 'g',
+              \})
+        Assert Equals(getline(7, 8), [
+              \ 'foo-bar-hoge foo-bar-hoge',
+              \ 'hello-world hello-world',
+              \])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Multi-line/Non-global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'range': [1, line('$')],
+              \})
+        Assert Equals(getline(7, 8), [
+              \ 'foo-bar-hoge hello-world',
+              \ 'foo-bar-hoge hello-world',
+              \])
+      End
+
+      It substitutes helloWorld to fooBarHoge (Multi-line/Global)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'range': [1, line('$')],
+              \ 'flags': 'g',
+              \})
+        Assert Equals(getline(7, 8), [
+              \ 'foo-bar-hoge foo-bar-hoge',
+              \ 'foo-bar-hoge foo-bar-hoge',
+              \])
+      End
+
+      It DOES NOT substitute helloWorld to fooBarHoge (disabled by flags)
+        call reword#substitute('HelloWorld', 'FooBarHoge', {
+              \ 'range': [1, line('$')],
+              \ 'flags': 'gk',
+              \})
+        Assert Equals(getline(7, 8), [
+              \ 'hello-world hello-world',
+              \ 'hello-world hello-world',
+              \])
+      End
+    End
+  End
+
   Describe #parse()
     It parses '' properly
       let [pat, sub, flags] = reword#parse('')
