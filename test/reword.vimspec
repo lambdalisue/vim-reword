@@ -1,0 +1,73 @@
+Describe reword
+  Describe #parse()
+    It parses '' properly
+      let [pat, sub, flags] = reword#parse('')
+      Assert Equals(pat, '')
+      Assert Equals(sub, '')
+      Assert Equals(flags, '')
+    End
+
+    It parses '/' properly
+      let [pat, sub, flags] = reword#parse('/')
+      Assert Equals(pat, '')
+      Assert Equals(sub, '')
+      Assert Equals(flags, '')
+    End
+
+    It parses '/Hello' properly
+      let [pat, sub, flags] = reword#parse('/Hello')
+      Assert Equals(pat, 'Hello')
+      Assert Equals(sub, '')
+      Assert Equals(flags, '')
+    End
+
+    It parses '/Hello/World' properly
+      let [pat, sub, flags] = reword#parse('/Hello/World')
+      Assert Equals(pat, 'Hello')
+      Assert Equals(sub, 'World')
+      Assert Equals(flags, '')
+    End
+
+    It parses '/Hello/World/glsk' properly
+      let [pat, sub, flags] = reword#parse('/Hello/World/glsk')
+      Assert Equals(pat, 'Hello')
+      Assert Equals(sub, 'World')
+      Assert Equals(flags, 'glsk')
+    End
+
+    It parses '!Hello/World' properly
+      let [pat, sub, flags] = reword#parse('!Hello/World')
+      Assert Equals(pat, 'Hello/World')
+      Assert Equals(sub, '')
+      Assert Equals(flags, '')
+    End
+
+    It parses '!Hello/World!Goodbye/World' properly
+      let [pat, sub, flags] = reword#parse('!Hello/World!Goodbye/World')
+      Assert Equals(pat, 'Hello/World')
+      Assert Equals(sub, 'Goodbye/World')
+      Assert Equals(flags, '')
+    End
+
+    It parses '/Hello\/World' properly
+      let [pat, sub, flags] = reword#parse('/Hello\/World')
+      Assert Equals(pat, 'Hello/World')
+      Assert Equals(sub, '')
+      Assert Equals(flags, '')
+    End
+
+    It parses '/He\\llo\/World' properly
+      let [pat, sub, flags] = reword#parse('/He\\llo\/World')
+      Assert Equals(pat, 'He\llo/World')
+      Assert Equals(sub, '')
+      Assert Equals(flags, '')
+    End
+
+    It parses '/He\\llo\/World/Go\\odbye\/World' properly
+      let [pat, sub, flags] = reword#parse('/He\\llo\/World/Go\\odbye\/World')
+      Assert Equals(pat, 'He\llo/World')
+      Assert Equals(sub, 'Go\odbye/World')
+      Assert Equals(flags, '')
+    End
+  End
+End
