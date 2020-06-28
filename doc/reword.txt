@@ -38,8 +38,9 @@ INTERFACE						*reword-interface*
 -----------------------------------------------------------------------------
 VARIABLE						*reword-variable*
 
-*g:reword_disable_seamless_preview*
-	Set 1 to disable seamless preview feature via |cnoreabbrev|.
+*g:reword_disable_live*
+	Set 1 to disable live preview. Use it with |reword#live#start()| to
+	define non default abbreviations.
 	Default: 0
 
 
@@ -66,22 +67,18 @@ COMMAND							*reword-command*
 >
 	:%Reword!HelloWorld!FooBarHoge!g
 <
-							*:RewordPreview*
-:[range]RewordPreview
-	Start live-preview substitution.
 
 -----------------------------------------------------------------------------
 FUNCTION						*reword-function*
 
-						*reword#preview#seamless()*
-reword#preview#seamless()
-	An abbreviation function to start |:RewordPreview| seemlessly.
+						*reword#live#start()*
+reword#live#start()
+	An abbreviation function to start live preview.
 	Use it with |cnoreabbrev| and |map-<expr>| like
 >
-	cnoreabbrev <expr> Reword reword#preview#seamless()
+	cnoreabbrev <expr> Reword reword#live#start()
 <
-	Then when user hit Reword{delimiter}, |:RewordPreview| is called with
-	the {delimiter} seemlessly.
+	Then when user hit Reword{delimiter} to start live preview.
 
 
 =============================================================================
