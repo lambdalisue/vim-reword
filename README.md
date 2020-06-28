@@ -5,19 +5,36 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Doc](https://img.shields.io/badge/doc-%3Ah%20reword-orange.svg)](doc/reword.txt)
 
-Keep case in substututions.
+Replace words in a buffer in case preserving manner, with live preview feature for Vim and Neovim.
 
 ![Reword preview](https://user-images.githubusercontent.com/546312/85490727-3fd56080-b60d-11ea-9a8b-4571c3279dcd.gif)
 
-**In alpha stage**
-
 ## Usage
 
-When `:%Reword/HelloWorld/FooBarHoge/g` has executed, the following substitutions will be applied
+Use `Reword` command to replace the first word in a current line like:
 
-| From          | To             | Disable flag |
-| ------------- | -------------- | ------------ |
-| `HelloWorld`  | `FooBarHoge`   | -            |
-| `helloWorld`  | `fooBarHoge`   | `l`          |
-| `hello_world` | `foo_bar_hoge` | `s`          |
-| `hello-world` | `foo-bar-hoge` | `k`          |
+```
+:Reword/HelloWorld/FooBarHoge
+```
+
+And use `/g` flags to replace all words in a current line like:
+
+```
+:Reword/HelloWorld/FooBarHoge/g
+```
+
+Prepend `%` to replace all words in a buffer like:
+
+```
+:%Reword/HelloWorld/FooBarHoge/g
+```
+
+Note that the following substitutions will be applied as well with `:Reword` command
+
+| Name             | From          | To             | Disable flag |
+| ---------------- | ------------- | -------------- | ------------ |
+| `lowerCamelCase` | `helloWorld`  | `fooBarHoge`   | `l`          |
+| `snake_case`     | `hello_world` | `foo_bar_hoge` | `s`          |
+| `kebab-case`     | `hello-world` | `foo-bar-hoge` | `k`          |
+
+Use above disable flags to disable each cases.

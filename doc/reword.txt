@@ -23,14 +23,28 @@ INTRODUCTION						*reword-introduction*
 =============================================================================
 USAGE							*reword-usage*
 
-Use UpperCamelCase in |:Reword| command to substitute like
+Use |:Reword| command to replace the first word in a current line like:
+>
+	:Reword/HelloWorld/FooBarHoge
+<
+And use "g" flags to replace all words in a current line like:
 >
 	:Reword/HelloWorld/FooBarHoge/g
 <
-If you'd like to apply the substitution to the entire buffer, use % like
+Prepend "%" to replace all words in a buffer like:
 >
 	:%Reword/HelloWorld/FooBarHoge/g
 <
+Note that the following substitutions will be applied as well with
+|:Reword| command:
+
+	Name		From		To		Disable flag~
+	lowerCamelCase	helloWorld	fooBarHoge	l
+	snake_case	hello_world	foo_bar_hoge	s
+	kebab-case	hello-world	foo-bar-hoge	k
+
+Use above disable flags to disable each cases.
+
 
 =============================================================================
 INTERFACE						*reword-interface*
@@ -67,6 +81,7 @@ COMMAND							*reword-command*
 >
 	:%Reword!HelloWorld!FooBarHoge!g
 <
+	Note that patterns in {old} or {new} are escaped prior to substitute.
 
 -----------------------------------------------------------------------------
 FUNCTION						*reword-function*
@@ -74,11 +89,11 @@ FUNCTION						*reword-function*
 						*reword#live#start()*
 reword#live#start()
 	An abbreviation function to start live preview.
-	Use it with |cnoreabbrev| and |map-<expr>| like
+	Use it with |cnoreabbrev| and |map-<expr>| like:
 >
 	cnoreabbrev <expr> Reword reword#live#start()
 <
-	Then when user hit Reword{delimiter} to start live preview.
+	Then the live preview starts when user hit Reword{delimiter}.
 
 
 =============================================================================
