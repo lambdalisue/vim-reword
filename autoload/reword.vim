@@ -1,4 +1,4 @@
-function! reword#substitute(pat, sub, ...) abort
+function! reword#substitute(old, new, ...) abort
   let options = extend({
         \ 'range': [],
         \ 'flags': g:reword#default_flags,
@@ -10,31 +10,31 @@ function! reword#substitute(pat, sub, ...) abort
     if options.flags !~# 'l'
       silent! execute printf('%ss/\C%s/%s/%s',
             \ range,
-            \ reword#case#to_lower_camel(a:pat),
-            \ reword#case#to_lower_camel(a:sub),
+            \ reword#case#to_lower_camel(a:old),
+            \ reword#case#to_lower_camel(a:new),
             \ flags,
             \)
     endif
     if options.flags !~# 's'
       silent! execute printf('%ss/\C%s/%s/%s',
             \ range,
-            \ reword#case#to_snake(a:pat),
-            \ reword#case#to_snake(a:sub),
+            \ reword#case#to_snake(a:old),
+            \ reword#case#to_snake(a:new),
             \ flags,
             \)
     endif
     if options.flags !~# 'k'
       silent! execute printf('%ss/\C%s/%s/%s',
             \ range,
-            \ reword#case#to_kebab(a:pat),
-            \ reword#case#to_kebab(a:sub),
+            \ reword#case#to_kebab(a:old),
+            \ reword#case#to_kebab(a:new),
             \ flags,
             \)
     endif
     silent! execute printf('%ss/\C%s/%s/%s',
           \ range,
-          \ a:pat,
-          \ a:sub,
+          \ a:old,
+          \ a:new,
           \ flags,
           \)
   catch /^Vim\%((\a\+)\)\=:E486:/
@@ -72,8 +72,8 @@ endfunction
 
 function! reword#command(range, qargs) abort
   let expr = substitute(a:qargs, '^\s\+\|\s\+$', '', 'g')
-  let [pat, sub, flags] = reword#parse(expr)
-  call reword#substitute(pat, sub, {
+  let [old, new, flags] = reword#parse(expr)
+  call reword#substitute(old, new, {
         \ 'range': a:range,
         \ 'flags': flags,
         \})

@@ -47,9 +47,9 @@ VARIABLE						*reword-variable*
 COMMAND							*reword-command*
 
 							*:Reword*
-:[range]Reword/{pat}/{sub}/[flags]
-	Substitute {pat} in the current buffer to {sub}. The {pat} must be
-	written in UpperCamelCase then corresponding cases of the {pat} will
+:[range]Reword/{old}/{new}/[flags]
+	Substitute {old} in the current buffer to {new}. The {old} must be
+	written in UpperCamelCase then corresponding cases of the {old} will
 	be substituted.
 	Note that the following additional {flags} are available
 
