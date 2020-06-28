@@ -55,15 +55,19 @@ function! reword#parse(expr) abort
   let i1 = match(a:expr, printf('[^\\]%s', sep), 1)
   if i1 is# -1
     let pat = a:expr[1:]
+    let pat = substitute(pat, '\\\([^\\]\)', '\1', 'g')
     return [pat, sub, flags]
   endif
   let pat = a:expr[1:i1]
+  let pat = substitute(pat, '\\\([^\\]\)', '\1', 'g')
   let i2 = match(a:expr, printf('[^\\]%s', sep), i1 + 1)
   if i2 is# -1
     let sub = a:expr[i1 + 2:]
+    let sub = substitute(sub, '\\\([^\\]\)', '\1', 'g')
     return [pat, sub, flags]
   endif
   let sub = a:expr[i1 + 2:i2]
+  let sub = substitute(sub, '\\\([^\\]\)', '\1', 'g')
   let flags = a:expr[i2 + 2:]
   return [pat, sub, flags]
 endfunction
@@ -93,5 +97,4 @@ function! reword#command(range, qargs) abort
         \ 'flags': flags,
         \})
 endfunction
-
 let g:reword#default_flags = get(g:, 'reword#default_flags', '')
