@@ -92,6 +92,8 @@ function! s:build_pattern(range, text) abort
           \ reword#lower_camel_case(a:text),
           \ reword#snake_case(a:text),
           \ reword#kebab_case(a:text),
+          \ tolower(a:text),
+          \ toupper(a:text),
           \])), '\|'))
     if rs isnot# v:null && re isnot# v:null
       call add(es, printf('\%%>%dl\%%<%dl%s', rs, re, pattern))
