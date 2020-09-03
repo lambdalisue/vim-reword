@@ -40,5 +40,7 @@ Note that the following substitutions will be applied as well with `:Reword` com
 | `lowerCamelCase` | `helloWorld`  | `fooBarHoge`   | `l`          |
 | `snake_case`     | `hello_world` | `foo_bar_hoge` | `s`          |
 | `kebab-case`     | `hello-world` | `foo-bar-hoge` | `k`          |
+| `lower`          | `helloworld`  | `foobarhoge`   | `i`          |
+| `UPPER`          | `HELLOWORLD`  | `FOOBARHOGE`   | `i`          |
 
 Use above disable flags to disable each cases.

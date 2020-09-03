@@ -5,7 +5,7 @@ function! reword#substitute(old, new, ...) abort
         \}, a:0 ? a:1 : {},
         \)
   let range = reword#range(options.range)
-  let flags = substitute(options.flags, '[lsk]', '', 'g')
+  let flags = substitute(options.flags, '[lski]', '', 'g')
   try
     if options.flags !~# 'l'
       silent! execute printf('%ss/\C%s/%s/%s',
@@ -37,6 +37,20 @@ function! reword#substitute(old, new, ...) abort
           \ a:new,
           \ flags,
           \)
+    if options.flags !~# 'i'
+      silent! execute printf('%ss/\C%s/%s/%s',
+            \ range,
+            \ tolower(a:old),
+            \ tolower(a:new),
+            \ flags,
+            \)
+      silent! execute printf('%ss/\C%s/%s/%s',
+            \ range,
+            \ toupper(a:old),
+            \ toupper(a:new),
+            \ flags,
+            \)
+    endif
   catch /^Vim\%((\a\+)\)\=:E486:/
     echohl ErrorMsg
     echo matchstr(v:exception, 'Vim(.*):\zs.*')
