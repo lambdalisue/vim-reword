@@ -19,6 +19,7 @@ function! s:start() abort range
   let prefix = reword#range(range)
   let modified = &modified
   let hlsearch = &hlsearch
+  let foldenable = &foldenable
   let undofile = tempname()
   let ns = {
         \ 'bufnr': bufnr('%'),
@@ -29,9 +30,14 @@ function! s:start() abort range
   try
     execute printf('wundo! %s', fnameescape(undofile))
     set hlsearch
+    set nofoldenable
+    let winfo = getwininfo(win_getid())[0]
+    let preview_content = getline(winfo.topline, winfo.botline)
+    %delete _
+    call setline(1, preview_content)
     let timer = timer_start(
           \ s:interval,
-          \ funcref('s:update', [ns]),
+          \ { t -> s:update(t, ns, preview_content) },
           \ { 'repeat': -1 },
           \)
     let expr = input(':' . prefix . 'Reword', '', 'command')
@@ -40,14 +46,18 @@ function! s:start() abort range
     silent! call timer_stop(timer)
     silent! execute printf('rundo %s', fnameescape(undofile))
     let &hlsearch = hlsearch
+    let &foldenable = foldenable
     let &modified = modified
+    if exists('b:reword_m')
+      silent! call matchdelete(b:reword_m)
+    endif
   endtry
   if s:apply(range, expr)
     call histadd('cmd', printf('%sReword%s', prefix, expr))
   endif
 endfunction
 
-function! s:update(ns, timer) abort
+function! s:update(timer, ns, preview_content) abort
   if getcmdtype() !=# '@' || a:ns.bufnr isnot# bufnr('%')
     call timer_stop(a:timer)
     return
@@ -57,26 +67,27 @@ function! s:update(ns, timer) abort
     return
   endif
   let a:ns.previous = expr
-  call setline(1, a:ns.content)
+  call setline(1, a:preview_content)
   call s:apply(a:ns.range, expr)
   redraw
 endfunction
 
 function! s:apply(range, expr) abort
   let [old, new, flags] = reword#parse(a:expr)
-  if empty(old)
-    nohlsearch
-  elseif empty(new)
-    silent! execute printf(
-          \ '/\C\%%(%s\)/',
-          \ s:build_pattern(a:range, old),
-          \)
-  else
+  if exists('b:reword_m')
+    silent! call matchdelete(b:reword_m)
+  endif
+  if !empty(old) && !empty(new)
     call reword#substitute(old, new, {
           \ 'range': a:range,
           \ 'flags': flags,
           \})
     return 1
+  elseif !empty(old)
+    let b:reword_m = matchadd('Search', printf(
+          \ '\C\%%(%s\)',
+          \ s:build_pattern(a:range, old),
+          \))
   endif
 endfunction
 
